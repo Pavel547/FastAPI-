@@ -7,5 +7,9 @@ app = FastAPI()
 #     return {"message :": "Hello world"}
 
 @app.get("/items/{item_id}")
-async def read_item(item_id):
+async def read_item(item_id: int):
     return {"item_id": item_id}
+
+# @app.get("/congratulations/{name}")
+# async def congrat_user(name):
+#     return {"Congratulations you finishe the school": name}
