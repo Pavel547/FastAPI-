@@ -1,7 +1,7 @@
-# from fastapi import FastAPI
+from fastapi import FastAPI
 # from enum import Enum
 
-# app = FastAPI()
+app = FastAPI()
 
 # @app.get('/')
 # async def root():
@@ -90,3 +90,11 @@
 # @app.get("/users/{user_name}")
 # async def return_user(user_name: str, user_id: int | None = None):
 #     return {"user_name": user_name, "user_id": user_id}
+
+
+# @app.get("/items/{item_id}/itmname/{item_name}")
+# async def read_item(item_id: int, item_name: str, quantity: int | None = None):
+#     if quantity:
+#         return {"item_id": {item_id}, "itmname": {item_name}, "quantity": {quantity}}
+#     else:
+#         return {"item_id": {item_id}, "itmname":{item_name}}
