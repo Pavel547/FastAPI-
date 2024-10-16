@@ -1,10 +1,10 @@
 from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import Session
+from sqlalchemy.orm import Session
 
 from . import crud, schemas, models
 from .database import SessionLocal, engine
 
-models.Base.metadata.creatr_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
     
 app = FastAPI()
     
@@ -27,12 +27,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
 
-# The function returns users from zero to hundredth
+# The function returns list of users from zero to hundredth
 @app.get("/users/", response_model=list[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
 
+# The function returns only one user
 @app.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
@@ -49,4 +50,15 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
     
+@app.patch("/user_email/{user_id}", response_model=schemas.UserBase)
+def update_user_email(user_id: int, new_email: schemas.UserBase, db: Session = Depends(get_db)):
+    return crud.update_user_email(db=db, user_id=user_id, update_data=new_email)
+
+@app.delete("/delet_user/{user_id}")
+def del_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+    crud.del_user(db=db, user=user)    
+    return "User was deleted succsessfully"
     
