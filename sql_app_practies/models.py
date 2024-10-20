@@ -7,6 +7,7 @@ class Owner(Base):
     
     owner_id = Column(Integer, primary_key=True, index=True)
     name_and_surename = Column(String, index=True)
+    age = Column(Integer, index=True)
     dat_of_birth = Column(Date)
     insurance = Column(Boolean, default=False)
     
