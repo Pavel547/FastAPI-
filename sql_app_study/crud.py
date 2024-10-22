@@ -40,3 +40,4 @@ def del_user(db: Session, user: schemas.User):
     db.delete(user)
     db.commit()
     
+    

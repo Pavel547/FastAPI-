@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
-def get_user_by_id(db: Session, user_id: int):
-    return db.query(models.Owner).filter(models.Owner.owner_id == user_id).first()
+def get_owner_by_id(db: Session, id: int):
+    return db.query(models.Owner).filter(models.Owner.owner_id == id).first()
 
-def get_users_by_age(db:Session, age: int):
+def get_owner_by_age(db:Session, age: int):
     return db.query(models.Owner).filter(models.Owner.age == age).all()
 
-def get_users(db: Session, skip: int = 0, limit: int = 15):
+def get_owner(db: Session, skip: int = 0, limit: int = 15):
     return db.query(models.Owner).offset(skip).limit(limit).all()
 
 def create_owner(db: Session, owner: schemas.OwnerCreate):
@@ -33,11 +33,23 @@ def get_vechicles_by_mark(db: Session, mark: str):
 def get_vechicles(db: Session, skip: int = 0 , limit: int = 15):
     return db.query(models.Vechicle).offset(skip).limit(limit).all()
 
-def create_vechicle(db: Session, vechicle: schemas.VechicleCreate):
-    db_vechicle = models.Vechicle(plate_number = vechicle.vechicle_plate, type = vechicle.type_of_vechicle,
-    mark = vechicle.vechicle_mark, made = vechicle.year, date_of_registration = vechicle.date_of_registration)
+def create_vechicle(db: Session, vechicle: schemas.VechicleCreate, user_id: int):
+    db_vechicle = models.Vechicle(**vechicle.model_dump(),  owner_id = user_id) # plate_number = vechicle.vechicle_plate, type = vechicle.type_of_vechicle, mark = vechicle.vechicle_mark, made = vechicle.year, date_of_registration = vechicle.date_of_registration,
     db.add(db_vechicle)
     db.commit()
     db.refresh(db_vechicle)
     return db_vechicle
 
+def re_registration_owner(db: Session, id: int, update_data: schemas.OwnerBase):
+    owner = db.query(models.Owner).filter(models.Owner.owner_id == id).first()
+    owner.name_and_surename = update_data
+    owner.age = update_data.age
+    owner.dat_of_birth = update_data.date_of_birth
+    owner.insurance = update_data.insurance
+    db.commit()
+    db.refresh(owner)
+    return owner
+    
+def del_owner(db: Session, owner: schemas.Owner):
+    db.delete(owner)
+    db.refresh()
