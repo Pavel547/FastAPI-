@@ -7,7 +7,7 @@ def get_owner_by_id(db: Session, id: int):
 def get_owner_by_age(db:Session, age: int):
     return db.query(models.Owner).filter(models.Owner.age == age).all()
 
-def get_owner(db: Session, skip: int = 0, limit: int = 15):
+def get_owners(db: Session, skip: int = 0, limit: int = 15):
     return db.query(models.Owner).offset(skip).limit(limit).all()
 
 def create_owner(db: Session, owner: schemas.OwnerCreate):
