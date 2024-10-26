@@ -11,18 +11,18 @@ class Owner(Base):
     dat_of_birth = Column(Date)
     insurance = Column(Boolean, default=False)
     
-    vechicles = relationship("Vechicle", back_populates="owner")
+    vehicles = relationship("Vehicle", back_populates="owner")
     
-class Vechicle(Base):
-    __tablename__ = "vechicles"
+class Vehicle(Base):
+    __tablename__ = "vehicles"
     
-    vechicle_id = Column(Integer, primary_key=True, index=True)
-    vechicle_plate = Column(String, index=True, unique=True)
-    type_of_vechicle = Column(String(25))
-    vechicle_mark = Column(String)
+    vehicle_id = Column(Integer, primary_key=True, index=True)
+    vehicle_plate = Column(String, index=True, unique=True)
+    type_of_vehicle = Column(String(25))
+    vehicle_brand = Column(String)
     year = Column(Integer, index=True)
     date_of_registration = Column(Date, index=True)
-    owner_id = Column(Integer, ForeignKey("owners.id"))
+    owner_id = Column(Integer, ForeignKey("owners.owner_id"))
     
-    owner = relationship("Owner", back_populates="vechicle")
+    owner = relationship("Owner", back_populates="vehicle")
     

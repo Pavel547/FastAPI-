@@ -18,27 +18,27 @@ def create_owner(db: Session, owner: schemas.OwnerCreate):
     db.refresh(db_owner)
     return db_owner
 
-def get_vechicle_by_id(db: Session, vechicle_id: int):
-    return db.query(models.Vechicle).filter(models.Vechicle.vechicle_id == vechicle_id).first()
+def get_vehicle_by_id(db: Session, vehicle_id: int):
+    return db.query(models.Vehicle).filter(models.Vehicle.vehicle_id == vehicle_id).first()
 
-def get_vechicles_by_year(db: Session, year: int):
-    return db.query(models.Vechicle).filter(models.Vechicle.year == year).all()
+def get_vehicles_by_year(db: Session, year: int):
+    return db.query(models.Vehicle).filter(models.Vehicle.year == year).all()
 
-def get_vechicles_by_type(db:Session, type: str):
-    return db.query(models.Vechicle).filter(models.Vechicle.type_of_vechicle == type).all()
+def get_vehicles_by_type(db:Session, type: str):
+    return db.query(models.Vehicle).filter(models.Vehicle.type_of_vehicle == type).all()
 
-def get_vechicles_by_mark(db: Session, mark: str):
-    return db.query(models.Vechicle).filter(models.Vechicle.vechicle_mark == mark).all()
+def get_vehicles_by_brand(db: Session, brand: str):
+    return db.query(models.Vehicle).filter(models.Vehicle.vehicle_brand == brand).all()
 
-def get_vechicles(db: Session, skip: int = 0 , limit: int = 15):
-    return db.query(models.Vechicle).offset(skip).limit(limit).all()
+def get_vehicles(db: Session, skip: int = 0 , limit: int = 15):
+    return db.query(models.Vehicle).offset(skip).limit(limit).all()
 
-def create_vechicle(db: Session, vechicle: schemas.VechicleCreate, user_id: int):
-    db_vechicle = models.Vechicle(**vechicle.model_dump(),  owner_id = user_id) # plate_number = vechicle.vechicle_plate, type = vechicle.type_of_vechicle, mark = vechicle.vechicle_mark, made = vechicle.year, date_of_registration = vechicle.date_of_registration,
-    db.add(db_vechicle)
+def create_owner_vehicle(db: Session, vehicle: schemas.VehicleCreate, owner_id: int):
+    db_vehicle = models.Vehicle(**vehicle.model_dump(),  owner_id = owner_id) 
+    db.add(db_vehicle)
     db.commit()
-    db.refresh(db_vechicle)
-    return db_vechicle
+    db.refresh(db_vehicle)
+    return db_vehicle
 
 def re_registration_owner(db: Session, id: int, update_data: schemas.OwnerBase):
     owner = db.query(models.Owner).filter(models.Owner.owner_id == id).first()

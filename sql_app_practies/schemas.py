@@ -1,10 +1,10 @@
 from pydantic import BaseModel, field_validator
 from datetime import date
 
-class VechicleBase(BaseModel):
-    vechicle_plate: str
-    type_of_vechicle: str
-    vechicle_mark: str
+class VehicleBase(BaseModel):
+    vehicle_plate: str
+    type_of_vehicle: str
+    vehicle_brand: str
     year: int
     date_of_registration: date
     
@@ -21,11 +21,11 @@ class VechicleBase(BaseModel):
             raise ValueError("The vehicle's registration date cannot exceed today's date")
         return value
     
-class VechicleCreate(VechicleBase):
+class VehicleCreate(VehicleBase):
     pass
 
-class Vechicle(VechicleBase):
-    vechicle_id: int
+class Vehicle(VehicleBase):
+    vehicle_id: int
     owner_id: int
     
     class Config:
@@ -46,7 +46,7 @@ class OwnerBase(BaseModel):
     @field_validator('date_of_birth')
     def validator_for_date_birth(cls, value):
         if value > date.today():
-            raise ValueError("Thу registration date cannot be in the future")
+            raise ValueError("The registration date cannot be in the future")
         return value
 
 class OwnerCreate(OwnerBase):
@@ -54,7 +54,7 @@ class OwnerCreate(OwnerBase):
 
 class Owner(OwnerBase):
     owner_id: int
-    vechicles: list[Vechicle] = []
+    vehicles: list[Vehicle] = []
     
     class Config:
         from_attributes = True
