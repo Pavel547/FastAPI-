@@ -98,3 +98,8 @@ app = FastAPI()
 #         return {"item_id": {item_id}, "itmname": {item_name}, "quantity": {quantity}}
 #     else:
 #         return {"item_id": {item_id}, "itmname":{item_name}}
+
+
+@app.get("/user/{user_name}")
+async def hello_user(user_name: str,):
+    return {"message": "Hello", "name": user_name}
