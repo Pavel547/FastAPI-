@@ -66,7 +66,7 @@ fake_users_db = {
         "full_name": "Oleg Brovsky",
         "email": "test2@gmail.com",
         "password": "fakehashedpassword2",
-        "disable": True,
+        "disabled": True,
     },
 }
 
@@ -86,7 +86,6 @@ class User(BaseModel):
 class UserInDB(User):
     hashed_password: str
 
-
 def get_user(db, username: str):
     if username in db:
         user_dict = db[username]
@@ -98,7 +97,7 @@ def fake_decode_token(token):
     user = get_user(fake_users_db, token)
     return user
 
-def get_current_user(token: Annotated[str, Depends(oauth2_schema)]):
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = fake_decode_token(token)
     if not user:
         raise HTTPException(
@@ -125,6 +124,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
     return{"access_token": user.username, "token_type": "bearer"}
+
 
 @app.get("/users/me")
 async def read_users_me(
