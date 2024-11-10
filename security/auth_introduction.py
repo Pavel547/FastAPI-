@@ -57,7 +57,7 @@ fake_users_db = {
         "username": "user1",
         "full_name": "Alex Naja",
         "email": "test1@gmail.com",
-        "password": "fakehashedpassword1",
+        "hashed_password": "fakehashedsecret",
         "disabled": False,
     },
     
@@ -65,7 +65,7 @@ fake_users_db = {
         "username": "user2",
         "full_name": "Oleg Brovsky",
         "email": "test2@gmail.com",
-        "password": "fakehashedpassword2",
+        "hashed_password": "fakehashedpassword2",
         "disabled": True,
     },
 }
@@ -75,13 +75,14 @@ app = FastAPI()
 def fake_hash_password(password: str):
     return "fakehashed" + password
 
-oauth2_scheme = OAuth2PasswordBearer("token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class User(BaseModel):
     username: str
     email: str | None = None
     full_name: str | None = None
-    disable: bool | None = None
+    disabled: bool | None = None
+    
     
 class UserInDB(User):
     hashed_password: str
@@ -97,19 +98,20 @@ def fake_decode_token(token):
     user = get_user(fake_users_db, token)
     return user
 
-def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = fake_decode_token(token)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"www-Authenticate": "Bearer"},
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
         )
     return user
 
 async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
-    if current_user.disable:
+    if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
@@ -122,13 +124,13 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     hashed_password = fake_hash_password(form_data.password)
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    
-    return{"access_token": user.username, "token_type": "bearer"}
+
+    return {"access_token": user.username, "token_type": "bearer"}
 
 
-@app.get("/users/me")
+@app.get("/users/me", response_model=User)
 async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)]
+    current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     return current_user
         
