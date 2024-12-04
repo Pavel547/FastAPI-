@@ -4,13 +4,12 @@ from datetime import date
 
 class TaskBase(BaseModel):
     task: str
-    description: str
+    description: str | None = None
     deadline: date
+    completed: bool 
     
 class TaskCreate(TaskBase):
     pass
 
 class Task(TaskBase):
     id: int
-    completed: bool | None = None
-    
