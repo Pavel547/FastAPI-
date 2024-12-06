@@ -13,6 +13,9 @@ def create_task(db: Session, tasks: schemas.TaskCreate):
     db.refresh(db_task)
     return db_task
 
+def get_task_by_name(db: Session, task_name: str):
+    return db.query(models.Task).filter(models.Task.task==task_name).first()
+
 def get_task_by_id(db: Session, task_id: int):
     return db.query(models.Task).filter(models.Task.id==task_id).first()
     
@@ -29,6 +32,6 @@ def update_task_status(db: Session, task_name: str, update_date: schemas.TaskBas
     db.refresh(task)
     return task
 
-def del_task(db: Session, task: schemas.Task):
+def del_task(db: Session, task: models.Task):
     db.delete(task)
     db.commit()

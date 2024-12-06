@@ -6,7 +6,7 @@ class TaskBase(BaseModel):
     task: str
     description: str | None = None
     deadline: date
-    completed: bool 
+    completed: bool
     
 class TaskCreate(TaskBase):
     pass
